@@ -1,6 +1,6 @@
 import logging
 from uspqueuebot.database import insert_user, remove_user
-from uspqueuebot.constants import EMPTY_QUEUE_MESSAGE, IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
+from uspqueuebot.constants import EMPTY_QUEUE_MESSAGE, IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
 from uspqueuebot.utilities import get_next_queue_number, get_position, get_queue, get_sha256_hash, is_in_queue
 
 # Logging is cool!
@@ -10,8 +10,7 @@ if logger.handlers:
         logger.removeHandler(handler)
 logging.basicConfig(level=logging.INFO)
 
-def join_command(bot, chat_id, username):
-    queue = get_queue()
+def join_command(bot, queue, chat_id, username):
     if is_in_queue(queue, chat_id):
         bot.send_message(chat_id=chat_id, text=IN_QUEUE_MESSAGE)
         logger.info("User already in queue tried to join queue.")
@@ -24,8 +23,7 @@ def join_command(bot, chat_id, username):
     logger.info("New user added to the queue.")
     return
 
-def leave_command(bot, chat_id):
-    queue = get_queue()
+def leave_command(bot, queue, chat_id):
     if not is_in_queue(queue, chat_id):
         bot.send_message(chat_id=chat_id, text=NOT_IN_QUEUE_MESSAGE)
         logger.info("User not in queue tried to leave queue.")
@@ -37,8 +35,7 @@ def leave_command(bot, chat_id):
     logger.info("User removed from the queue.")
     return
 
-def howlong_command(bot, chat_id):
-    queue = get_queue()
+def howlong_command(bot, queue, chat_id):
     position = get_position(chat_id, queue)
     queue_length = str(len(queue))
     message = POSITION_MESSAGE + position + "\n" + QUEUE_LENGTH_MESSAGE + queue_length
@@ -46,8 +43,7 @@ def howlong_command(bot, chat_id):
     logger.info("Position and queue details sent to user.")
     return
 
-def viewqueue_command(bot, chat_id):
-    queue = get_queue()
+def viewqueue_command(bot, queue, chat_id):
     if len(queue) == 0:
         bot.send_message(chat_id=chat_id, text=EMPTY_QUEUE_MESSAGE)
         logger.info("Empty queue has been sent to admin.")
@@ -62,4 +58,16 @@ def viewqueue_command(bot, chat_id):
         message += username
     bot.send_message(chat_id=chat_id, text=message)
     logger.info("Queue details has been sent to admin.")
+    return
+
+def next_command(bot, queue, chat_id):
+    if len(queue) == 0:
+        bot.send_message(chat_id=chat_id, text=EMPTY_QUEUE_MESSAGE)
+        logger.info("Empty queue has been sent to admin.")
+        return
+    to_delete = queue[0][1]
+    hashid = get_sha256_hash(to_delete)
+    remove_user(hashid)
+    bot.send_message(chat_id=chat_id, text=NEXT_SUCCESS_MESSAGE)
+    logger.info("Queue advanced by one user.")
     return

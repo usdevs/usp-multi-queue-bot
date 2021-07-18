@@ -1,8 +1,8 @@
 import logging
-from uspqueuebot.logic import howlong_command, join_command, leave_command, viewqueue_command
+from uspqueuebot.logic import howlong_command, join_command, leave_command, next_command, viewqueue_command
 from uspqueuebot.constants import HELP_MESSAGE, INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE, START_MESSAGE
 from uspqueuebot.credentials import ADMINS, ADMIN_CHAT_ID
-from uspqueuebot.utilities import extract_user_details, get_message_type
+from uspqueuebot.utilities import extract_user_details, get_message_type, get_queue
 
 
 # Logging is cool!
@@ -59,25 +59,31 @@ def main(bot, body):
         logger.info("Help command detected and processed.")
         return
 
+    queue = get_queue()
+
     if text == "/join":
-        join_command(bot, chat_id, username)
+        join_command(bot, queue, chat_id, username)
         logger.info("Join command detected and processed.")
         return
 
     if text == "/leave":
-        leave_command(bot, chat_id)
+        leave_command(bot, queue, chat_id)
         logger.info("Leave command detected and processed.")
         return
 
     if text == "/howlong":
-        howlong_command(bot, chat_id)
+        howlong_command(bot, queue, chat_id)
         logger.info("Howlong command detected and processed.")
         return
 
     if chat_id in ADMINS.values():
         if text == "/viewqueue":
-            viewqueue_command(bot, chat_id)
+            viewqueue_command(bot, queue, chat_id)
             logger.info("Admin viewqueue command detected and processed.")
+            return
+        if text == "/next":
+            next_command(bot, queue, chat_id)
+            logger.info("Next command detected and processed.")
             return
         # intentionally no return here
 
