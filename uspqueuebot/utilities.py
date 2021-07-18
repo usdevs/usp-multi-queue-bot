@@ -98,9 +98,21 @@ def get_next_queue_number(queue):
         queue_number = queue[-1][0] + 1
     return queue_number
     
-
 def is_in_queue(queue, chat_id):
     for entry in queue:
         if entry[1] == chat_id:
             return True
     return False
+
+def get_position(chat_id, queue):
+    position = 1
+    found = False
+    for entry in queue:
+        if entry[1] == chat_id:
+            found = True
+            break
+        position += 1
+    
+    if not found:
+        position = "Not in queue"
+    return str(position)

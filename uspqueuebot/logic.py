@@ -1,7 +1,7 @@
 import logging
 from uspqueuebot.database import insert_user, remove_user
-from uspqueuebot.constants import IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE
-from uspqueuebot.utilities import get_next_queue_number, get_queue, get_sha256_hash, is_in_queue
+from uspqueuebot.constants import IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
+from uspqueuebot.utilities import get_next_queue_number, get_position, get_queue, get_sha256_hash, is_in_queue
 
 # Logging is cool!
 logger = logging.getLogger()
@@ -35,4 +35,13 @@ def leave_command(bot, chat_id):
     remove_user(hashid)
     bot.send_message(chat_id=chat_id, text=LEAVE_SUCCESS_MESSAGE)
     logger.info("User removed from the queue.")
+    return
+
+def howlong_command(bot, chat_id):
+    queue = get_queue()
+    position = get_position(chat_id, queue)
+    queue_length = str(len(queue))
+    message = POSITION_MESSAGE + position + "\n" + QUEUE_LENGTH_MESSAGE + queue_length
+    bot.send_message(chat_id=chat_id, text=message)
+    logger.info("Position and queue details sent to user.")
     return

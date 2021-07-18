@@ -1,5 +1,5 @@
 import logging
-from uspqueuebot.logic import join_command, leave_command
+from uspqueuebot.logic import howlong_command, join_command, leave_command
 from uspqueuebot.constants import HELP_MESSAGE, INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE, START_MESSAGE
 from uspqueuebot.credentials import ADMIN_CHAT_ID
 from uspqueuebot.utilities import extract_user_details, get_message_type
@@ -67,6 +67,11 @@ def main(bot, body):
     if text == "/leave":
         leave_command(bot, chat_id)
         logger.info("Leave command detected and processed.")
+        return
+
+    if text == "/howlong":
+        howlong_command(bot, chat_id)
+        logger.info("Howlong command detected and processed.")
         return
 
     ## echo
