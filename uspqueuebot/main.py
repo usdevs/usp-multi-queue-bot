@@ -1,9 +1,8 @@
 import logging
 from uspqueuebot.logic import join_command
-from uspqueuebot.database import create_table
 from uspqueuebot.constants import HELP_MESSAGE, INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE, START_MESSAGE
 from uspqueuebot.credentials import ADMIN_CHAT_ID
-from uspqueuebot.utilities import extract_user_details, get_message_type, get_queue
+from uspqueuebot.utilities import extract_user_details, get_message_type
 
 
 # Logging is cool!
@@ -58,6 +57,11 @@ def main(bot, body):
     if text == "/help":
         bot.send_message(chat_id=chat_id, text=HELP_MESSAGE)
         logger.info("Help command detected and processed.")
+        return
+
+    if text == "/join":
+        join_command(bot, chat_id, username)
+        logger.info("Join command detected and processed.")
         return
         
     ## echo

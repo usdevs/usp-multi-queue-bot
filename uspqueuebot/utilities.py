@@ -1,4 +1,5 @@
 import hashlib
+from uspqueuebot.database import get_table
 
 def get_message_type(body):
     """
@@ -26,6 +27,15 @@ def get_message_type(body):
     
     return "others"
 
+def decimal_to_int(decimal):
+    """
+    Converts a json decimal to an integer.
+    Mostly used to convert chat_id
+    """
+    
+    integer = int(str(decimal))
+    return integer
+    
 def extract_user_details(body):
     """
     Obtains the chat ID from the event body
@@ -47,6 +57,8 @@ def extract_user_details(body):
     else:
         chat_id = body["message"]["chat"]["id"]
         username = body["message"]["chat"]["username"]
+
+    chat_id = decimal_to_int(chat_id)
     return (chat_id, username)
 
 def get_sha256_hash(plaintext):
@@ -69,3 +81,19 @@ def get_sha256_hash(plaintext):
     hash = hasher.hexdigest()
     return hash
 
+def get_queue():
+    raw_table = get_table()
+    queue = []
+    for entry in raw_table["Items"]:
+        queue_number = decimal_to_int(entry["queue_number"])
+        chat_id = decimal_to_int(entry["chat_id"])
+        username = entry["username"]
+        queue.append((queue_number, chat_id, username))
+    queue.sort()
+    return queue
+
+def is_in_queue(queue, chat_id):
+    for entry in queue:
+        if entry[1] == chat_id:
+            return True
+    return False

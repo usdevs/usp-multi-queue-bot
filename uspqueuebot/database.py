@@ -1,5 +1,4 @@
 import logging
-from uspqueuebot.utilities import get_sha256_hash
 import boto3
 
 from boto3.dynamodb.conditions import Attr
@@ -64,12 +63,10 @@ def get_table():
         response = get_table()
         return response    
 
-def insert_user(chat_id, username, queue_number):
+def insert_user(hashid, chat_id, username, queue_number):
     """
     Insert a new entry into the table
     """
-
-    hashid = get_sha256_hash(chat_id)
     table.update_item(
         Key = {"hashid": hashid},
         UpdateExpression = "SET {} = :val1, {} =:val2, {} = :val3".format("chat_id", "username", "queue_number"),
