@@ -92,6 +92,13 @@ def get_queue():
     queue.sort()
     return queue
 
+def get_next_queue_number(queue):
+    queue_number = 0
+    if len(queue) != 0:
+        queue_number = queue[-1][0] + 1
+    return queue_number
+    
+
 def is_in_queue(queue, chat_id):
     for entry in queue:
         if entry[1] == chat_id:

@@ -1,5 +1,5 @@
 import logging
-from uspqueuebot.logic import join_command
+from uspqueuebot.logic import join_command, leave_command
 from uspqueuebot.constants import HELP_MESSAGE, INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE, START_MESSAGE
 from uspqueuebot.credentials import ADMIN_CHAT_ID
 from uspqueuebot.utilities import extract_user_details, get_message_type
@@ -63,7 +63,12 @@ def main(bot, body):
         join_command(bot, chat_id, username)
         logger.info("Join command detected and processed.")
         return
-        
+
+    if text == "/leave":
+        leave_command(bot, chat_id)
+        logger.info("Leave command detected and processed.")
+        return
+
     ## echo
     bot.send_message(chat_id=chat_id, text=text)
     return
