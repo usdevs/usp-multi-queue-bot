@@ -1,7 +1,9 @@
 import logging
-from uspqueuebot.constants import INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE
+from uspqueuebot.logic import join_command
+from uspqueuebot.database import create_table
+from uspqueuebot.constants import HELP_MESSAGE, INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE, START_MESSAGE
 from uspqueuebot.credentials import ADMIN_CHAT_ID
-from uspqueuebot.utilities import extract_chat_id, get_message_type
+from uspqueuebot.utilities import extract_user_details, get_message_type, get_queue
 
 
 # Logging is cool!
@@ -23,7 +25,7 @@ def main(bot, body):
 
     # obtain key message details
     message_type = get_message_type(body)
-    chat_id = extract_chat_id(body)
+    chat_id, username = extract_user_details(body)
 
     # for debugging, set DEBUG_MODE to True
     if DEBUG_MODE:
@@ -46,7 +48,18 @@ def main(bot, body):
         logger.info("No command detected.")
         return
 
+    # start command
+    if text == "/start":
+        bot.send_message(chat_id=chat_id, text=START_MESSAGE)
+        logger.info("Start command detected and processed.")
+        return
 
+    # help command
+    if text == "/help":
+        bot.send_message(chat_id=chat_id, text=HELP_MESSAGE)
+        logger.info("Help command detected and processed.")
+        return
+        
     ## echo
     bot.send_message(chat_id=chat_id, text=text)
     return

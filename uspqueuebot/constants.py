@@ -7,3 +7,5 @@ ADMIN_HANDLE = "@kwokyto"
 
 INVALID_FORMAT_MESSAGE = "A message of invalid format has been sent."
 NO_COMMAND_MESSAGE = "No command detected."
+START_MESSAGE = "START_MESSAGE"
+HELP_MESSAGE = "HELP_MESSAGE"

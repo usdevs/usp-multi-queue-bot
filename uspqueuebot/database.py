@@ -1,4 +1,5 @@
 import logging
+from uspqueuebot.utilities import get_sha256_hash
 import boto3
 
 from boto3.dynamodb.conditions import Attr
@@ -15,7 +16,6 @@ client = boto3.resource("dynamodb")
 TABLE_NAME = "USPQueueBotTable"
 table = client.Table(TABLE_NAME)
 
-'''
 def create_table():
     """
     Creates a DynamoDB table
@@ -46,7 +46,7 @@ def create_table():
         logger.info("Table named " + TABLE_NAME + " already exists in DynamoDB.")
     return
 
-def get_all_users():
+def get_table():
     """
     Retrieve all contents of the table
 
@@ -55,36 +55,16 @@ def get_all_users():
     dic
         Response from scan requeston DynamoDB
     """
+    try:
+        response = table.scan()
+        logger.info("All entries have been retrieved and returned.")
+        return response
+    except:
+        create_table()
+        response = get_table()
+        return response    
 
-    response = table.scan()
-    logger.info("All users has been retrieved and returned")
-    return response
-
-def get_user(chat_id):
-    """
-    Query a specific entry in the table
-
-    Returns
-    -------
-    dic
-        Dictionary representing the user if user is found
-    None
-        If user was not found
-    """
-
-    hashid = get_sha256_hash(chat_id)
-    response = table.get_item(
-        Key = {"hashid": hashid}
-    )
-    if "Item" in response.keys():
-        user = response["Item"]
-        logger.info("User item found and returned.")
-        return user
-    else:
-        logger.warning("User was not found in the table.")
-        return None
-
-def insert_user(chat_id, nusnetid, username):
+def insert_user(chat_id, username, queue_number):
     """
     Insert a new entry into the table
     """
@@ -92,42 +72,17 @@ def insert_user(chat_id, nusnetid, username):
     hashid = get_sha256_hash(chat_id)
     table.update_item(
         Key = {"hashid": hashid},
-        UpdateExpression = "SET {} = :val1, {} =:val2, {} = :val3".format("chat_id", "nusnetid", "username"),
-        ExpressionAttributeValues = {":val1": chat_id, ":val2": nusnetid, ":val3": username}
+        UpdateExpression = "SET {} = :val1, {} =:val2, {} = :val3".format("chat_id", "username", "queue_number"),
+        ExpressionAttributeValues = {":val1": chat_id, ":val2": username, ":val3": queue_number}
         )
-    logger.info("New user successfully added into DynamoDB.")
+    logger.info("New entry successfully added into DynamoDB.")
 
 def remove_user(hashid):
     """
-    Removes a user from the table using hashid
+    Removes an entry from the table using hashid
     """
 
     table.delete_item(
         Key = {"hashid": hashid}
     )
     logger.info("User has been successfully removed from the database.")
-
-def is_registered(chat_id):
-    """
-    Checks if a user is registered. Since this will be the first logical access to the table,
-    the method also creates a table if it does not exist.
-
-    Returns
-    -------
-    dic
-        Dictionary representing the user if user is registered
-    bool
-        False if user is not registered
-    """
-
-    try:
-        user = get_user(chat_id)
-        if user == None:
-            return False
-        return user
-    except:
-        create_table()
-        return False
-
-
-'''
