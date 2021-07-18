@@ -1,6 +1,6 @@
 import logging
 from uspqueuebot.database import insert_user, remove_user
-from uspqueuebot.constants import IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
+from uspqueuebot.constants import EMPTY_QUEUE_MESSAGE, IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
 from uspqueuebot.utilities import get_next_queue_number, get_position, get_queue, get_sha256_hash, is_in_queue
 
 # Logging is cool!
@@ -44,4 +44,22 @@ def howlong_command(bot, chat_id):
     message = POSITION_MESSAGE + position + "\n" + QUEUE_LENGTH_MESSAGE + queue_length
     bot.send_message(chat_id=chat_id, text=message)
     logger.info("Position and queue details sent to user.")
+    return
+
+def viewqueue_command(bot, chat_id):
+    queue = get_queue()
+    if len(queue) == 0:
+        bot.send_message(chat_id=chat_id, text=EMPTY_QUEUE_MESSAGE)
+        logger.info("Empty queue has been sent to admin.")
+        return
+    message = "Queue:"
+    count = 1
+    for entry in queue:
+        username = entry[2]
+        message += "\n"
+        message += str(count)
+        message += ". "
+        message += username
+    bot.send_message(chat_id=chat_id, text=message)
+    logger.info("Queue details has been sent to admin.")
     return
