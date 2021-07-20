@@ -11,7 +11,7 @@ from uspqueuebot.database import insert_user, remove_user
 from uspqueuebot.utilities import (get_bump_queue, get_first_chat_id,
                                    get_first_username, get_next_queue,
                                    get_next_queue_number, get_position,
-                                   get_queue, get_sha256_hash, is_in_queue)
+                                   get_sha256_hash, is_in_queue)
 
 # Logging is cool!
 logger = logging.getLogger()
