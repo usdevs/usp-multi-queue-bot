@@ -2,7 +2,7 @@ import logging
 
 from uspqueuebot.constants import (HELP_MESSAGE, INVALID_COMMAND_MESSAGE,
                                    INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE,
-                                   START_MESSAGE)
+                                   START_MESSAGE, UNDER_MAINTENANCE_MESSAGE)
 from uspqueuebot.credentials import ADMIN_CHAT_ID, ADMINS
 from uspqueuebot.logic import (bump_command, howlong_command, join_command,
                                leave_command, next_command, viewqueue_command)
@@ -36,6 +36,8 @@ def main(bot, body):
         text = str(body)
         bot.send_message(chat_id=ADMIN_CHAT_ID, text=text)
         logger.warn("Event text has been sent to the admin.")
+        bot.send_message(chat_id=chat_id, text=UNDER_MAINTENANCE_MESSAGE)
+        logger.warn("Maintenance message has been sent to user.")
         return
 
     # check for file types we cannot handle

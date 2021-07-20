@@ -29,3 +29,4 @@ BUMP_SUCCESS_MESSAGE = "Yay, that late person got bumped down already."
 INVALID_COMMAND_MESSAGE= "You think I graduated from Harvard is it? Don't what you are telling me to do lah."
 USELESS_BUMP_MESSAGE = "Only 1 person in the queue, you want to bump for what?"
 BUMPEE_MESSAGE = "See lah, tell you come don't want to come. Too late liao, you got bumped down the queue. Use /howlong to check your position."
+UNDER_MAINTENANCE_MESSAGE = "Sorry, the bot is currently under maintenance. Do hang tight for more updates, or contact " + ADMIN_HANDLE
