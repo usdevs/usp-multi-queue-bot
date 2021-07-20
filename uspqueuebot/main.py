@@ -1,6 +1,6 @@
 import logging
 from uspqueuebot.logic import bump_command, howlong_command, join_command, leave_command, next_command, viewqueue_command
-from uspqueuebot.constants import HELP_MESSAGE, INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE, START_MESSAGE
+from uspqueuebot.constants import HELP_MESSAGE, INVALID_COMMAND_MESSAGE, INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE, START_MESSAGE
 from uspqueuebot.credentials import ADMINS, ADMIN_CHAT_ID
 from uspqueuebot.utilities import extract_user_details, get_message_type, get_queue
 
@@ -61,36 +61,45 @@ def main(bot, body):
 
     queue = get_queue()
 
+    # join command
     if text == "/join":
         join_command(bot, queue, chat_id, username)
         logger.info("Join command detected and processed.")
         return
 
+    # leave command
     if text == "/leave":
         leave_command(bot, queue, chat_id)
         logger.info("Leave command detected and processed.")
         return
 
+    # howlong command
     if text == "/howlong":
         howlong_command(bot, queue, chat_id)
         logger.info("Howlong command detected and processed.")
         return
 
+    # admin commands
     if chat_id in ADMINS.values():
+        # viewqueue command
         if text == "/viewqueue":
             viewqueue_command(bot, queue, chat_id)
             logger.info("Admin viewqueue command detected and processed.")
             return
+        
+        # next command
         if text == "/next":
             next_command(bot, queue, chat_id)
             logger.info("Next command detected and processed.")
             return
+
+        # bump command
         if text == "/bump":
             bump_command(bot, queue, chat_id)
             logger.info("Bump command detected and processed.")
             return
         # intentionally no return here
 
-    ## echo
-    bot.send_message(chat_id=chat_id, text=text)
+    ## invalid command
+    bot.send_message(chat_id=chat_id, text=INVALID_COMMAND_MESSAGE)
     return
