@@ -16,7 +16,7 @@ Displays start message.
 
 ### `/help`
 
-Display help message with available commands.
+Displays help message with available commands.
 
 ### `/join`
 
