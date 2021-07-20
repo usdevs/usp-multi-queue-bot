@@ -124,6 +124,11 @@ def get_next_queue(queue):
     remove_user(hashid)
     return queue[1:]
 
+def get_first_chat_id(queue):
+    if len(queue) == 0:
+        return "None"
+    return queue[0][1]
+
 def get_first_username(queue):
     if len(queue) == 0:
         return "None"
