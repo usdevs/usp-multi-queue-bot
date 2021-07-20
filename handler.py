@@ -67,14 +67,13 @@ def webhook(event, context):
     if event.get('httpMethod') == 'POST' and event.get('body'): 
         logger.info('Message received')
         body = telegram.Update.de_json(json.loads(event.get('body')), bot).to_dict()
-        
+
         try:
             main(bot, body)
         except Exception as error:
-            error_message = "There is an unhandled exception, please debug immediately.\n" + str(error)
+            error_message = "There is an unhandled exception, please debug immediately.\n" + error.__str__()
             bot.send_message(chat_id=ADMIN_CHAT_ID, text=error_message)
             logger.error(error_message)
-            return ERROR_RESPONSE
 
         return OK_RESPONSE
 
