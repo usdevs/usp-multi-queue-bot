@@ -1,5 +1,7 @@
 # USP Queue Bot
 
+![logo](logo.png)
+
 ## Features
 
 The USP Queue Bot simulates a physical queue that is managed using simple commands.
