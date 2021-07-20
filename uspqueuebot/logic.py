@@ -89,11 +89,14 @@ def next_command(bot, queue, chat_id):
     return
 
 def notify(bot, queue):
-    count = 0
+    count = -1
     for entry in queue[:NUMBER_TO_NOTIFY]:
+        count += 1
+        if count == 0:
+            bot.send_message(chat_id=chat_id, text=YOUR_TURN_MESSAGE)
+            continue
         chat_id = entry[1]
         bot.send_message(chat_id=chat_id, text=COME_NOW_MESSAGE + str(count))
-        count += 1
     logger.info("First few users has been informed of their queue status.")
     return
 
