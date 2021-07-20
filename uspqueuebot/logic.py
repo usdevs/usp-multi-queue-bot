@@ -1,7 +1,7 @@
 import logging
 from uspqueuebot.database import insert_user, remove_user
-from uspqueuebot.constants import COME_NOW_MESSAGE, EMPTY_QUEUE_MESSAGE, IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, NUMBER_TO_NOTIFY, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
-from uspqueuebot.utilities import get_next_queue_number, get_position, get_queue, get_sha256_hash, is_in_queue
+from uspqueuebot.constants import BUMP_SUCCESS_MESSAGE, COME_NOW_MESSAGE, EMPTY_QUEUE_MESSAGE, IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, NUMBER_TO_NOTIFY, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
+from uspqueuebot.utilities import bump_queue, get_first_username, get_next_queue_number, get_position, get_queue, get_sha256_hash, is_in_queue
 
 # Logging is cool!
 logger = logging.getLogger()
@@ -81,4 +81,12 @@ def notify(bot, queue):
         bot.send_message(chat_id=chat_id, text=COME_NOW_MESSAGE + str(count))
         count += 1
     logger.info("First few users has been informed of their queue status.")
+    return
+
+def bump_command(bot, queue, chat_id):
+    new_queue = bump_queue(queue)
+    next_username = get_first_username(new_queue)
+    bot.send_message(chat_id=chat_id, text=BUMP_SUCCESS_MESSAGE + next_username)
+    logger.info("First user in the queue has been bumped down.")
+    notify(bot, new_queue)
     return

@@ -1,4 +1,5 @@
 import hashlib
+from uspqueuebot.constants import NUMBER_TO_BUMP
 from uspqueuebot.database import get_table
 
 def get_message_type(body):
@@ -116,3 +117,13 @@ def get_position(chat_id, queue):
     if not found:
         position = "Not in queue"
     return str(position)
+
+def get_first_username(queue):
+    if len(queue) == 0:
+        return None
+    return queue[0][2]
+
+def bump_queue(queue):
+    ## for hongpei
+    x = NUMBER_TO_BUMP
+    return queue
