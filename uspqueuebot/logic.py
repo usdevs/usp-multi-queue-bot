@@ -48,7 +48,7 @@ def leave_command(bot, queue, chat_id):
 def howlong_command(bot, queue, chat_id):
     position = get_position(chat_id, queue)
     queue_length = str(len(queue))
-    message = POSITION_MESSAGE + position + "\n" + QUEUE_LENGTH_MESSAGE + queue_length + "."
+    message = POSITION_MESSAGE + position + QUEUE_LENGTH_MESSAGE + queue_length + "."
     bot.send_message(chat_id=chat_id, text=message)
     logger.info("Position and queue details sent to user.")
     return
