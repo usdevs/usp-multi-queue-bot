@@ -18,6 +18,7 @@ HELP_MESSAGE = "Aiyo ok ok, these are what you can use:" +\
     "\n\nStill don't know ah? Aish ok message me here: " + ADMIN_HANDLE
 IN_QUEUE_MESSAGE = "Tsk! You are already in the queue lah!"
 JOIN_SUCCESS_MESSAGE = "See got queue then happy happy just join right? Ok ok I put you in."
+YOUR_TURN_MESSAGE = "Eh eh its your turn already, hurry up lah can or not?"
 NOT_IN_QUEUE_MESSAGE = "Woi... You are not in the queue yet leh!"
 LEAVE_SUCCESS_MESSAGE = "You think this one game is it? Join queue then leave... Nevermind, take you out of the queue already."
 POSITION_MESSAGE = "How long more ah? Now in front of you got "

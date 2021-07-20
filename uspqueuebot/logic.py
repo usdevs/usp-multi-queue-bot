@@ -6,7 +6,7 @@ from uspqueuebot.constants import (BUMP_SUCCESS_MESSAGE, BUMPEE_MESSAGE,
                                    LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE,
                                    NOT_IN_QUEUE_MESSAGE, NUMBER_TO_NOTIFY,
                                    POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE,
-                                   USELESS_BUMP_MESSAGE)
+                                   USELESS_BUMP_MESSAGE, YOUR_TURN_MESSAGE)
 from uspqueuebot.database import insert_user, remove_user
 from uspqueuebot.utilities import (get_bump_queue, get_first_chat_id,
                                    get_first_username, get_next_queue,
@@ -31,6 +31,11 @@ def join_command(bot, queue, chat_id, username):
     insert_user(hashid, chat_id, username, queue_number)
     bot.send_message(chat_id=chat_id, text=JOIN_SUCCESS_MESSAGE)
     logger.info("New user added to the queue.")
+
+    if len(queue) == 0:
+        bot.send_message(chat_id=chat_id, text=YOUR_TURN_MESSAGE)
+        logger.info("Newly added user is first in line.")
+    
     return
 
 def leave_command(bot, queue, chat_id):
