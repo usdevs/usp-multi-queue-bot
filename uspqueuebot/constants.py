@@ -6,7 +6,6 @@ NUMBER_TO_NOTIFY = 5
 NUMBER_TO_BUMP = 5
 
 # Messages sent to the user
-
 INVALID_FORMAT_MESSAGE = "A message of invalid format has been sent."
 NO_COMMAND_MESSAGE = "No command detected."
 START_MESSAGE = "START_MESSAGE"

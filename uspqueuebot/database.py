@@ -1,8 +1,6 @@
 import logging
 import boto3
 
-from boto3.dynamodb.conditions import Attr
-
 # Logging is cool!
 logger = logging.getLogger()
 if logger.handlers:

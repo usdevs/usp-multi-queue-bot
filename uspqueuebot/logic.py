@@ -1,7 +1,17 @@
 import logging
+
+from uspqueuebot.constants import (BUMP_SUCCESS_MESSAGE, BUMPEE_MESSAGE,
+                                   COME_NOW_MESSAGE, EMPTY_QUEUE_MESSAGE,
+                                   IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE,
+                                   LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE,
+                                   NOT_IN_QUEUE_MESSAGE, NUMBER_TO_NOTIFY,
+                                   POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE,
+                                   USELESS_BUMP_MESSAGE)
 from uspqueuebot.database import insert_user, remove_user
-from uspqueuebot.constants import BUMPEE_MESSAGE, BUMP_SUCCESS_MESSAGE, COME_NOW_MESSAGE, EMPTY_QUEUE_MESSAGE, IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, NUMBER_TO_NOTIFY, USELESS_BUMP_MESSAGE, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
-from uspqueuebot.utilities import get_bump_queue, get_first_chat_id, get_first_username, get_next_queue, get_next_queue_number, get_position, get_queue, get_sha256_hash, is_in_queue
+from uspqueuebot.utilities import (get_bump_queue, get_first_chat_id,
+                                   get_first_username, get_next_queue,
+                                   get_next_queue_number, get_position,
+                                   get_queue, get_sha256_hash, is_in_queue)
 
 # Logging is cool!
 logger = logging.getLogger()

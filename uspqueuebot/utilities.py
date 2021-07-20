@@ -1,6 +1,8 @@
 import hashlib
+
 from uspqueuebot.constants import NUMBER_TO_BUMP
 from uspqueuebot.database import get_table, remove_user
+
 
 def get_message_type(body):
     """
