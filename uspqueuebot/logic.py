@@ -1,6 +1,6 @@
 import logging
 from uspqueuebot.database import insert_user, remove_user
-from uspqueuebot.constants import EMPTY_QUEUE_MESSAGE, IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
+from uspqueuebot.constants import COME_NOW_MESSAGE, EMPTY_QUEUE_MESSAGE, IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE, LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE, NOT_IN_QUEUE_MESSAGE, NUMBER_TO_NOTIFY, POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE
 from uspqueuebot.utilities import get_next_queue_number, get_position, get_queue, get_sha256_hash, is_in_queue
 
 # Logging is cool!
@@ -56,6 +56,7 @@ def viewqueue_command(bot, queue, chat_id):
         message += str(count)
         message += ". "
         message += username
+        count += 1
     bot.send_message(chat_id=chat_id, text=message)
     logger.info("Queue details has been sent to admin.")
     return
@@ -70,4 +71,14 @@ def next_command(bot, queue, chat_id):
     remove_user(hashid)
     bot.send_message(chat_id=chat_id, text=NEXT_SUCCESS_MESSAGE)
     logger.info("Queue advanced by one user.")
+    notify(bot, queue[1:])
+    return
+
+def notify(bot, queue):
+    count = 0
+    for entry in queue[:NUMBER_TO_NOTIFY]:
+        chat_id = entry[1]
+        bot.send_message(chat_id=chat_id, text=COME_NOW_MESSAGE + str(count))
+        count += 1
+    logger.info("First few users has been informed of their queue status.")
     return
