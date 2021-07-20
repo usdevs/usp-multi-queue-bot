@@ -1,6 +1,6 @@
 import hashlib
 from uspqueuebot.constants import NUMBER_TO_BUMP
-from uspqueuebot.database import get_table
+from uspqueuebot.database import get_table, remove_user
 
 def get_message_type(body):
     """
@@ -118,12 +118,18 @@ def get_position(chat_id, queue):
         position = "Not in queue"
     return str(position)
 
+def get_next_queue(queue):
+    to_delete = queue[0][1]
+    hashid = get_sha256_hash(to_delete)
+    remove_user(hashid)
+    return queue[1:]
+
 def get_first_username(queue):
     if len(queue) == 0:
-        return None
+        return "None"
     return queue[0][2]
 
-def bump_queue(queue):
+def get_bump_queue(queue):
     ## for hongpei
     x = NUMBER_TO_BUMP
     return queue
