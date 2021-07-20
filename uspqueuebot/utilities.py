@@ -143,5 +143,5 @@ def get_bump_queue(queue):
     bump_queue = [(new_index, curr_tuple[1], curr_tuple[2]) for new_index, curr_tuple in enumerate(bump_queue)]
     
     if len(queue) > NUMBER_TO_BUMP + 1:
-        bump_queue.extend(queue[NUMBER_TO_BUMP + 2:])
+        bump_queue.extend(queue[NUMBER_TO_BUMP + 1:])
     return bump_queue
