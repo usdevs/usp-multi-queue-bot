@@ -113,6 +113,7 @@ def bump_command(bot, queue, chat_id):
     
     new_queue = get_bump_queue(queue)
     next_username = get_first_username(new_queue)
+    update_bump_queue(new_queue)
     inform_bumpee(bot, queue)
     bot.send_message(chat_id=chat_id, text=BUMP_SUCCESS_MESSAGE + next_username)
     logger.info("First user in the queue has been bumped down.")
@@ -123,4 +124,11 @@ def inform_bumpee(bot, queue):
     chat_id = get_first_chat_id(queue)
     bot.send_message(chat_id=chat_id, text=BUMPEE_MESSAGE)
     logger.info("Bumpee has been informed of the bump.")
+    return
+
+def update_bump_queue(queue):
+    for (queue_number, chat_id, username) in queue:
+        hashid = get_sha256_hash(chat_id)
+        insert_user(hashid, chat_id, username, queue_number)
+    logger.info("New bumped list has benen updated in the database.")
     return
