@@ -137,6 +137,11 @@ def get_first_username(queue):
     return queue[0][2]
 
 def get_bump_queue(queue):
-    ## for hongpei
-    x = NUMBER_TO_BUMP
-    return queue
+    bump_queue = queue[1:NUMBER_TO_BUMP + 1]
+    bump_queue.append(queue[0])
+    
+    bump_queue = [(new_index, curr_tuple[1], curr_tuple[2]) for new_index, curr_tuple in enumerate(bump_queue)]
+    
+    if len(queue) > NUMBER_TO_BUMP + 1:
+        bump_queue.extend(queue[NUMBER_TO_BUMP + 1:])
+    return bump_queue
