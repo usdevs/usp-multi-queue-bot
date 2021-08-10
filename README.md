@@ -4,6 +4,8 @@
 
 ## Features
 
+* Telegram Bot: [@uspqueuebot](https://telegram.me/uspqueuebot)
+
 The USP Queue Bot simulates a physical queue that is managed using simple commands.
 Users can join and leave the queue, while also keeping track of the queue length and their position in the queue.
 Admins can also manage the queue by removing or bumping the first user in the queue.
