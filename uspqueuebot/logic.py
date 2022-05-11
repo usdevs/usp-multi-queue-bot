@@ -139,7 +139,7 @@ def update_bump_queue(queue):
     logger.info("New bumped list has benen updated in the database.")
     return
 
-def purge_queue(bot, queue, chat_id):
+def purge_command(bot, queue, chat_id):
     user_chat_id = get_first_chat_id(queue)
     while user_chat_id != "None":
         hashid = get_sha256_hash(user_chat_id)
