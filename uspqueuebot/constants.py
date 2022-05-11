@@ -31,3 +31,5 @@ INVALID_COMMAND_MESSAGE= "You think I graduated from Harvard is it? Don't know w
 USELESS_BUMP_MESSAGE = "Only 1 person in the queue, you want to bump for what?"
 BUMPEE_MESSAGE = "See lah, tell you come don't want to come. Too late liao, you got bumped down the queue. Use /howlong to check your position."
 UNDER_MAINTENANCE_MESSAGE = "Sorry, the bot is currently under maintenance. Do hang tight for more updates, or contact " + ADMIN_HANDLE
+PURGE_MESSAGE = "You have been removed from the queue. If you think this is an error, think again. Or you can contact " + ADMIN_HANDLE
+PURGE_SUCESSFUL_MESSAGE = "The queue has been successfully purged."

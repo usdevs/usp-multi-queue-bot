@@ -5,8 +5,10 @@ from uspqueuebot.constants import (BUMP_SUCCESS_MESSAGE, BUMPEE_MESSAGE,
                                    IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE,
                                    LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE,
                                    NOT_IN_QUEUE_MESSAGE, NUMBER_TO_NOTIFY,
-                                   POSITION_MESSAGE, QUEUE_LENGTH_MESSAGE,
-                                   USELESS_BUMP_MESSAGE, YOUR_TURN_MESSAGE)
+                                   POSITION_MESSAGE, PURGE_MESSAGE,
+                                   PURGE_SUCESSFUL_MESSAGE,
+                                   QUEUE_LENGTH_MESSAGE, USELESS_BUMP_MESSAGE,
+                                   YOUR_TURN_MESSAGE)
 from uspqueuebot.database import insert_user, remove_user
 from uspqueuebot.utilities import (get_bump_queue, get_first_chat_id,
                                    get_first_username, get_next_queue,
@@ -133,4 +135,14 @@ def update_bump_queue(queue):
         hashid = get_sha256_hash(chat_id)
         insert_user(hashid, chat_id, username, queue_number)
     logger.info("New bumped list has benen updated in the database.")
+    return
+
+def purge_queue(bot, queue, chat_id):
+    user_chat_id = get_first_chat_id(queue)
+    while user_chat_id != "None":
+        hashid = get_sha256_hash(user_chat_id)
+        remove_user(hashid)
+        bot.send_message(chat_id=user_chat_id, text=PURGE_MESSAGE)
+        user_chat_id = get_first_chat_id(queue)
+    bot.send_message(chat_id=chat_id, text=PURGE_SUCESSFUL_MESSAGE)
     return

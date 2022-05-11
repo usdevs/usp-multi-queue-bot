@@ -54,6 +54,11 @@ Bumps the first person in the queue by a few positions if they are late.
 The admin would be informed of the username of the user that is next in line.
 The next few users would also be notified of their progress in the line.
 
+### `/purge`
+
+Purges the entire queue.
+Users in the queue will be notified of their removal from the queue.
+
 ## Debugging
 
 The following outlines the procedure for debugging.
