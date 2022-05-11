@@ -108,7 +108,8 @@ def is_in_queue(queue, chat_id):
     return False
 
 def get_position(chat_id, queue):
-    position = 1
+    ## position is equivalent to number of people ahead of user
+    position = 0
     found = False
     for entry in queue:
         if entry[1] == chat_id:
