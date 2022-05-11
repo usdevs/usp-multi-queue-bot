@@ -33,3 +33,6 @@ BUMPEE_MESSAGE = "See lah, tell you come don't want to come. Too late liao, you 
 UNDER_MAINTENANCE_MESSAGE = "Sorry, the bot is currently under maintenance. Do hang tight for more updates, or contact " + ADMIN_HANDLE
 PURGE_MESSAGE = "You have been removed from the queue. If you think this is an error, think again. Or you can contact " + ADMIN_HANDLE
 PURGE_SUCESSFUL_MESSAGE = "The queue has been successfully purged."
+BROADCAST_MESSAGE = "BEEPOO BEEPOO!! Announcement from the admin:\n\n"
+BROADCAST_SUCCESSFUL_MESSAGE = "Your message has been successfully broadcasted to all."
+BROADCAST_MESSAGE_MISSING_MESSAGE = "What you want me to broadcast? Empty message is it? Pfft!"

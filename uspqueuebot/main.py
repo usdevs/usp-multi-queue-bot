@@ -4,7 +4,7 @@ from uspqueuebot.constants import (HELP_MESSAGE, INVALID_COMMAND_MESSAGE,
                                    INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE,
                                    START_MESSAGE, UNDER_MAINTENANCE_MESSAGE)
 from uspqueuebot.credentials import ADMIN_CHAT_ID, ADMINS
-from uspqueuebot.logic import (bump_command, howlong_command, join_command,
+from uspqueuebot.logic import (broadcast_command, bump_command, howlong_command, join_command,
                                leave_command, next_command, purge_queue, viewqueue_command)
 from uspqueuebot.utilities import (extract_user_details, get_message_type,
                                    get_queue)
@@ -115,7 +115,12 @@ def main(bot, body):
             purge_queue(bot, queue, chat_id)
             logger.info("Purge command detected and processed.")
             return
-            
+
+        if text[:10] == "/broadcast":
+            broadcast_command(bot, queue, chat_id, text[10:])
+            logger.info("Broadcast command detected and processed.")
+            return
+
         # intentionally no return here
 
     ## invalid command

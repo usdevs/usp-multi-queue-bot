@@ -1,6 +1,8 @@
 import logging
 
-from uspqueuebot.constants import (BUMP_SUCCESS_MESSAGE, BUMPEE_MESSAGE,
+from uspqueuebot.constants import (BROADCAST_MESSAGE, BROADCAST_MESSAGE_MISSING_MESSAGE,
+                                   BROADCAST_SUCCESSFUL_MESSAGE,
+                                   BUMP_SUCCESS_MESSAGE, BUMPEE_MESSAGE,
                                    COME_NOW_MESSAGE, EMPTY_QUEUE_MESSAGE,
                                    IN_QUEUE_MESSAGE, JOIN_SUCCESS_MESSAGE,
                                    LEAVE_SUCCESS_MESSAGE, NEXT_SUCCESS_MESSAGE,
@@ -146,4 +148,16 @@ def purge_queue(bot, queue, chat_id):
         queue = queue[1:]
         user_chat_id = get_first_chat_id(queue)
     bot.send_message(chat_id=chat_id, text=PURGE_SUCESSFUL_MESSAGE)
+    return
+
+def broadcast_command(bot, queue, chat_id, message):
+    if message == "":
+        bot.send_message(chat_id=chat_id, text=BROADCAST_MESSAGE_MISSING_MESSAGE)
+        return
+    user_chat_id = get_first_chat_id(queue)
+    while user_chat_id != "None":
+        bot.send_message(chat_id=user_chat_id, text=BROADCAST_MESSAGE + message)
+        queue = queue[1:]
+        user_chat_id = get_first_chat_id(queue)
+    bot.send_message(chat_id=chat_id, text=BROADCAST_SUCCESSFUL_MESSAGE)
     return

@@ -59,6 +59,10 @@ The next few users would also be notified of their progress in the line.
 Purges the entire queue.
 Users in the queue will be notified of their removal from the queue.
 
+### `/broadcast <message>`
+
+Broadcasts a message to all users in the queue.
+
 ## Debugging
 
 The following outlines the procedure for debugging.
