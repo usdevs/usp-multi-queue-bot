@@ -143,6 +143,7 @@ def purge_queue(bot, queue, chat_id):
         hashid = get_sha256_hash(user_chat_id)
         remove_user(hashid)
         bot.send_message(chat_id=user_chat_id, text=PURGE_MESSAGE)
+        queue = queue[1:]
         user_chat_id = get_first_chat_id(queue)
     bot.send_message(chat_id=chat_id, text=PURGE_SUCESSFUL_MESSAGE)
     return
