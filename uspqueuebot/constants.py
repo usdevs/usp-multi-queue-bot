@@ -1,5 +1,5 @@
 # Admin specfic links
-ADMIN_HANDLE = "@kwokyto"
+ADMIN_HANDLE = "@ChengYi123"
 
 # Bot settings
 NUMBER_TO_NOTIFY = 5

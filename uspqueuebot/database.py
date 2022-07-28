@@ -10,7 +10,7 @@ logging.basicConfig(level=logging.INFO)
 
 # Setting up client with AWS
 client = boto3.resource("dynamodb")
-TABLE_NAME = "USPQueueBotTable"
+TABLE_NAME = "USPMultiQueueBotTable"
 table = client.Table(TABLE_NAME)
 
 def create_table():
