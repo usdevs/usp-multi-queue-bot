@@ -81,3 +81,6 @@ def remove_user(hashid):
         Key = {"hashid": hashid}
     )
     logger.info("User has been successfully removed from the database.")
+
+
+
