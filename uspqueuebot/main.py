@@ -126,6 +126,3 @@ def main(bot, body):
     ## invalid command
     bot.send_message(chat_id=chat_id, text=INVALID_COMMAND_MESSAGE)
     return
-
-
-
