@@ -161,3 +161,4 @@ def broadcast_command(bot, queue, chat_id, message):
         user_chat_id = get_first_chat_id(queue)
     bot.send_message(chat_id=chat_id, text=BROADCAST_SUCCESSFUL_MESSAGE)
     return
+
