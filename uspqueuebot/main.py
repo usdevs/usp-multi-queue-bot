@@ -1,13 +1,13 @@
 import logging
+import os
+import json
+from dotenv import load_dotenv
+import datetime
+from uspqueuebot.logic import (broadcast_command, bump_command, create_new_event, delete_event_command, howlong_command, join_command,
+                               leave_command, next_command, purge_command, purge_database_command, view_history_command, viewqueue_command)
+from uspqueuebot.utilities import (extract_user_details, get_event_queue_from_database, get_last_command_from_database, get_message_type, record_last_command_in_database, send_event_selection)
 
-from uspqueuebot.constants import (HELP_MESSAGE, INVALID_COMMAND_MESSAGE,
-                                   INVALID_FORMAT_MESSAGE, NO_COMMAND_MESSAGE,
-                                   START_MESSAGE, UNDER_MAINTENANCE_MESSAGE)
-from uspqueuebot.credentials import ADMIN_CHAT_ID, ADMINS
-from uspqueuebot.logic import (broadcast_command, bump_command, howlong_command, join_command,
-                               leave_command, next_command, purge_command, viewqueue_command)
-from uspqueuebot.utilities import (extract_user_details, get_message_type,
-                                   get_queue)
+load_dotenv()
 
 # Logging is cool!
 logger = logging.getLogger()
@@ -18,19 +18,14 @@ logging.basicConfig(level=logging.INFO)
 
 DEBUG_MODE = False
 
-def main(bot, body):
+def main(bot, update):
     """
     Runs the main logic of the Telegram bot
     """
-    
-    # for privacy issues, this is commented out
-    #logger.info('Event: {}'.format(body))
+    body = update.to_dict()
 
-    # manage updates (https://core.telegram.org/bots/api#getting-updates)
     if "update_id" in body.keys() and len(body.keys()) == 1:
-        logger.info("An update_id message has been sent by Telegram.")
-        logger.error('Event: {}'.format(body))
-        return
+        handle_invalid_updates(body)
     
     # obtain key message details
     message_type = get_message_type(body)
@@ -38,50 +33,59 @@ def main(bot, body):
 
     # for debugging, set DEBUG_MODE to True
     if DEBUG_MODE:
-        logger.warn("Debug mode has been activated.")
-        text = str(body)
-        bot.send_message(chat_id=ADMIN_CHAT_ID, text=text)
-        logger.warn("Event text has been sent to the admin.")
-        bot.send_message(chat_id=chat_id, text=UNDER_MAINTENANCE_MESSAGE)
-        logger.warn("Maintenance message has been sent to user.")
-        return
-
-    # check for file types we cannot handle
-    if not message_type == "text":
-        bot.send_message(chat_id=chat_id, text=INVALID_FORMAT_MESSAGE)
-        logger.info("A message of invalid format has been sent.")
+        handle_debug_mode(bot, body, chat_id)
+        return 
+    
+    if message_type == "text":
+        handle_text_message(bot, body, update, chat_id)
         return
     
-    # reject all non-commands
-    text = body["message"]["text"]
-    if text[0] != "/":
-        bot.send_message(chat_id=chat_id, text=NO_COMMAND_MESSAGE)
-        logger.info("No command detected.")
+    # When a user presses a button in an inline keyboard of a Telegram bot, the bot receives an update that is categorized as a "callback query." The callback query contains various pieces of information, including the callback_data associated with the button pressed.
+    if message_type == "callback_query":
+        handle_callback_query(bot, chat_id, username, update)
         return
 
-    # start command
-    if text == "/start":
-        bot.send_message(chat_id=chat_id, text=START_MESSAGE)
-        logger.info("Start command detected and processed.")
-        return
+    # file types we cannot handle
+    handle_invalid_message_type(bot, chat_id)   
+    return 
 
-    # help command
-    if text == "/help":
-        bot.send_message(chat_id=chat_id, text=HELP_MESSAGE)
-        logger.info("Help command detected and processed.")
-        return
+def handle_invalid_updates(body):
+    logger.info("An update_id message has been sent by Telegram.")
+    logger.error('Event: {}'.format(body))
+    return
 
-    queue = get_queue()
+def handle_debug_mode(bot, body, chat_id):
+    logger.warn("Debug mode has been activated.")
+    text = str(body)
+    bot.send_message(chat_id=os.getenv("ADMIN_CHAT_ID"), text=text)
+    logger.warn("Event text has been sent to the admin.")
+    bot.send_message(chat_id=chat_id, text=os.getenv("UNDER_MAINTENANCE_MESSAGE"))
+    logger.warn("Maintenance message has been sent to user.")
+    return
+
+def handle_invalid_message_type(bot, chat_id):
+    bot.send_message(chat_id=chat_id, text=os.getenv("INVALID_FORMAT_MESSAGE"))
+    logger.info("A message of invalid format has been sent.")
+    return
+
+def handle_callback_query(bot, chat_id, username, update):
+    query = update.callback_query
+    query.answer()  # It's good practice to answer the callback query
+
+    # Extract and process the callback data
+    event_id = query.data  
+    queue = get_event_queue_from_database(event_id)
+    text = get_last_command_from_database(chat_id)
 
     # join command
     if text == "/join":
-        join_command(bot, queue, chat_id, username)
+        join_command(bot, queue, chat_id, username, event_id)
         logger.info("Join command detected and processed.")
         return
 
     # leave command
     if text == "/leave":
-        leave_command(bot, queue, chat_id)
+        leave_command(bot, chat_id, event_id)
         logger.info("Leave command detected and processed.")
         return
 
@@ -91,8 +95,10 @@ def main(bot, body):
         logger.info("Howlong command detected and processed.")
         return
 
+    admins_str = os.getenv('ADMINS')
+    admins_dict = json.loads(admins_str.replace("'", "\"")) # replacing single quotes to double quotes for valid JSON
     # admin commands
-    if chat_id in ADMINS.values():
+    if chat_id in admins_dict.values():
         # viewqueue command
         if text == "/viewqueue":
             viewqueue_command(bot, queue, chat_id)
@@ -120,12 +126,74 @@ def main(bot, body):
             broadcast_command(bot, queue, chat_id, text[10:])
             logger.info("Broadcast command detected and processed.")
             return
-
-        # intentionally no return here
-
+        
+        if text == "/delete":
+            delete_event_command(bot, event_id, chat_id)
+            logger.info("Delete command detected and processed.")
+            return
+        
     ## invalid command
-    bot.send_message(chat_id=chat_id, text=INVALID_COMMAND_MESSAGE)
+    bot.send_message(chat_id=chat_id, text=os.getenv("INVALID_COMMAND_MESSAGE"))
     return
 
+def handle_text_message(bot, body, update, chat_id):
+    text = body["message"]["text"]
+    if text[0] != "/":
+        bot.send_message(chat_id=chat_id, text=os.getenv("NO_COMMAND_MESSAGE"))
+        logger.info("No command detected.")
+        return
 
+    # start command
+    if text == "/start":
+        bot.send_message(chat_id=chat_id, text=os.getenv("START_MESSAGE"))
+        logger.info("Start command detected and processed.")
+        return
 
+    # help command
+    if text == "/help":
+        bot.send_message(chat_id=chat_id, text=os.getenv("HELP_MESSAGE"))
+        logger.info("Help command detected and processed.")
+        return
+    
+    admins_str = os.getenv('ADMINS')
+    admins_dict = json.loads(admins_str.replace("'", "\""))
+
+    # admin commands
+    if chat_id in admins_dict.values():
+
+        # create new event command
+        if text[:7] == "/create":
+            create_new_event(bot, text[8:], chat_id)
+            logger.info("Created new event command detected and processed.")
+
+        def validate_date(date_string):
+            try:
+                date = datetime.datetime.strptime(date_string, "%d-%m-%Y")
+                return date
+            except ValueError:
+                return False
+            
+        # purge database command
+        if text[:8] == "/purgedb":
+            valid_date = validate_date(text[9:])
+            if valid_date:
+                purge_database_command(bot, valid_date, chat_id)
+                logger.info("Purge database command detected and processed.")
+            else:
+                logger.warning("Invalid date format.")
+            return
+        
+        #view history command
+        if text[:12] == "/viewhistory":
+            valid_date = validate_date(text[13:])
+            if valid_date:
+                view_history_command(bot, valid_date, chat_id)
+                logger.info("View history command detected and processed.")
+            else:
+                logger.warning("Invalid date format.")
+            return
+        
+    else: 
+        record_last_command_in_database(chat_id, text)
+        send_event_selection(update, text)
+        return 
